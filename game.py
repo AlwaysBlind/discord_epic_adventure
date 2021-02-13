@@ -1,16 +1,16 @@
-text = "_x________"
-
 
 class Game():
+    active = False
     cat = "🐈"
-    hero = "🐸"
-    n = 10
+    hero = "🤠"
+    n = 15
     cat_pos = n-1
     hero_pos = 0
     field = []
 
     def start(self):
-        self.field = ["_"]*self.n
+        self.active = True
+        self.field = [" "]*self.n
 
     def update(self):
         self.cat_pos -= 1
@@ -23,12 +23,11 @@ class Game():
         return msg
 
 
-g = Game()
+# g = Game()
 
-g.start()
-print(g.draw())
-g.update()
-print(g.draw())
-g.update()
-print(g.draw())
-//todo https: // github.com/Rapptz/discord.py/blob/async/examples/background_task.py
+# g.start()
+# print(g.draw())
+# g.update()
+# print(g.draw())
+# g.update()
+# print(g.draw())

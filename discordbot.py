@@ -2,8 +2,10 @@
 import os
 
 import discord
+import asyncio
 from discord import utils as dutils
 from dotenv import load_dotenv
+from game import Game
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -13,8 +15,7 @@ intents = discord.Intents.default()
 intents.members = True
 client = discord.Client(intents=intents)
 
-game = "_x________🐈\n nextrow"
-
+game = Game()
 
 @client.event
 async def on_ready():
@@ -40,7 +41,12 @@ async def on_message(message):
     if message.author == client.user:
         return
     if message.content.startswith("!play"):
-        await message.channel.send(game)
+        game.start()
+        game_message = await message.channel.send(game.draw())
+        while game.active:
+            await asyncio.sleep(0.8)
+            game.update()
+            await game_message.edit(content=game.draw())
 
 
 client.run(TOKEN)
