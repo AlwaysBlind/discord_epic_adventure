@@ -40,6 +40,8 @@ async def on_member_join(member):
 async def on_message(message):
     if message.author == client.user:
         return
+    if message.content.startswith("hide") and game.active:
+        game.hide()
     if message.content.startswith("!play"):
         game.start()
         game_message = await message.channel.send(game.draw())
