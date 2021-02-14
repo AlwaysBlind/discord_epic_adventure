@@ -17,6 +17,7 @@ client = discord.Client(intents=intents)
 
 game = Game()
 
+
 @client.event
 async def on_ready():
     guild = dutils.get(client.guilds, name=GUILD)
@@ -40,13 +41,22 @@ async def on_member_join(member):
 async def on_message(message):
     if message.author == client.user:
         return
-    if message.content.startswith("hide") and game.active:
-        game.hide()
-    if message.content.startswith("!play"):
+    if game.active:
+        if message.content.startswith("hide"):
+            game.hide()
+        elif message.content.startswith("run"):
+            game.run()
+        elif (message.content.startswith("gun") or
+              message.content.startswith("brutal vio")):
+            game.gun()
+        elif (message.content.startswith("feed")):
+            game.feed()
+        await message.delete()
+    elif message.content.startswith("!play"):
         game.start()
         game_message = await message.channel.send(game.draw())
         while game.active:
-            await asyncio.sleep(0.8)
+            await asyncio.sleep(0.4)
             game.update()
             await game_message.edit(content=game.draw())
 
