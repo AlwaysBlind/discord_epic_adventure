@@ -21,9 +21,8 @@ game = Game()
 @client.event
 async def on_ready():
     guild = dutils.get(client.guilds, name=GUILD)
-    textchannel = dutils.get(guild.channels, name="allmänt")
-    await textchannel.send(
-        f'{client.user} has connected to guild: {guild.name}(id:{guild.id})\n')
+    print(f'{client.user} has connected to guild: {guild.name} \
+            (id:{guild.id})\n')
     members = "\n - ".join([member.name for member in guild.members])
     print(f'Members of the guild:\n {members}')
 
@@ -56,7 +55,7 @@ async def on_message(message):
         game.start()
         game_message = await message.channel.send(game.draw())
         while game.active:
-            await asyncio.sleep(0.4)
+            await asyncio.sleep(1)
             game.update()
             await game_message.edit(content=game.draw())
 
