@@ -158,7 +158,8 @@ class Game():
                 self.state = State.GUN
                 self.active = False
             elif inp == State.FEED:
-                self.characters[self.MEAT_KEY] = character.Meat(self.hero.pos+1)
+                self.characters[self.MEAT_KEY] = character.Meat(
+                    self.hero.pos+1)
                 self.state = State.FEED
             self.hero.number_of_actions += 1
             self.inputs.clear()
