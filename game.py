@@ -5,14 +5,14 @@ import character
 class Game():
     active = False
     skull = "☠️"
-    MAX_TURNS_HIDDEN = 4
-    n = 15
+    MAX_TURNS_HIDDEN = 3
+    n = 16
     inputs = []
     MEAT_KEY = 'meat'
 
     def start(self):
         self.characters = dict()
-        self.hero = character.Hero(7)
+        self.hero = character.Hero(4)
         self.cat = character.Tiger(self.n-1)
         self.state = State.HUNT
         self.active = True
@@ -36,9 +36,9 @@ class Game():
         self.update_game_field()
 
     def get_game_field(self):
-        field = [" "]*self.n
-        field[0] = "⁢"
-        field.append("⁢")
+        # field = ["🌴"]*self.n
+        field = ["⠀"]*self.n
+        field.append("⁢⛰️")
         return field
 
     def hide(self):
@@ -76,7 +76,7 @@ class Game():
 
     def handle_state_VICTORY_RUN(self):
         self.header = "You outran the cat"
-        self.header2 = "You survive. Will you always outrun your fears?"
+        self.header2 = "You survive. Do you always run away from your fears?"
 
     def handle_state_VICTORY_HIDE(self):
         self.header = "The cat has run past you"
@@ -87,17 +87,15 @@ class Game():
         self.header2 = "You try to outrun it"
 
     def handle_state_HIDE(self):
-        if self.turns_hidden < self.MAX_TURNS_HIDDEN:
-            self.turns_hidden += 1
+        if self.turns_hidden > self.MAX_TURNS_HIDDEN:
             self.hero.image = self.hero.base_image
-
-        else:
             self.header = "Your disguise breaks."
             self.header2 = "You are now visible"
-
-        self.header = "The cat is coming closer."
-        self.header2 = "You hide. But for how long?"
-        self.hero.image = "🌴"
+        else:
+            self.turns_hidden += 1
+            self.header = "The cat is coming closer."
+            self.header2 = "You hide behind a tree. But for how long?"
+            self.hero.image = "🌴"
 
     def handle_state_DEAD(self):
         self.header = "The cat ate you"
@@ -113,10 +111,13 @@ class Game():
         self.header2 = "The majestic animal is dead. Why did you do this?"
         self.cat.image = "️💀"
 
+    def is_hiding(self):
+        return (self.state == State.HIDE and
+                self.turns_hidden <= self.MAX_TURNS_HIDDEN)
+
     def handle_state(self):
         if self.cat.pos == self.hero.pos:
-            if not (self.state == State.HIDE and
-                    self.turns_hidden >= self.MAX_TURNS_HIDDEN):
+            if not self.is_hiding():
                 self.hero.image = self.skull
                 self.state = State.DEAD
                 self.active = False
@@ -149,7 +150,7 @@ class Game():
             return
         if len(self.inputs) > 0:
             inp = self.inputs[0]
-            if inp == State.HIDE and self.turns_hidden < self.MAX_TURNS_HIDDEN:
+            if inp == State.HIDE:
                 self.state = State.HIDE
             elif inp == State.RUN:
                 self.hero.speed = 1
