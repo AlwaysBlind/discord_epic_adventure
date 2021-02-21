@@ -146,7 +146,7 @@ class Game:
 
     def handle_state_HUNT(self):
         self.header = "The fierce cat is coming closer." \
-            "What are you going to do? You can only choose one action"
+            "What do you do? One action only"
         self.header2 = "Feed him, hide or use brutal violence (gun)"
 
     def handle_input(self):

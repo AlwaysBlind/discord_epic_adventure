@@ -25,7 +25,7 @@ class Hero(Character):
         self.number_of_actions = 0
 
     def update(self):
-        if (random.uniform(0, 1) > 0.2):
+        if (random.uniform(0, 1) > 0.6):
             self.pos -= self.speed
 
 

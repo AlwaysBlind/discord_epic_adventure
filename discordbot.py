@@ -11,12 +11,11 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 games = dict()
+STARTCOMMAND = "!play_epic_adv"
 
 intents = discord.Intents.default()
 intents.members = True
 client = discord.Client(intents=intents)
-
-game = Game()
 
 
 @client.event
@@ -42,13 +41,14 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    game = games.get(message.guild.id, default=None)
+    game = games.get(message.guild.id, None)
     if game and game.active:
         if message.author.id != game.name:
             await message.channel.send(f"{message.author.name} do not \
             'interupt another players game")
             return
-
+        elif message.channel.id != game.channel:
+            return
         elif message.content.startswith("hide"):
             game.hide()
         elif message.content.startswith("run"):
@@ -58,16 +58,17 @@ async def on_message(message):
             game.gun()
         elif (message.content.startswith("feed")):
             game.feed()
-        elif message.content.startswith("!play"):
+        elif message.content.startswith(STARTCOMMAND):
             await message.channel.send("Game active on server. Can't play now")
 
         await message.delete()
         return
 
-    elif message.content.startswith("!play"):
+    elif message.content.startswith(STARTCOMMAND):
         game = Game(
             name=message.author.id, channel=message.channel.id)
         games[message.guild.id] = game
+        game.start()
 
         game_message = await message.channel.send(game.draw())
         while game.active:
