@@ -10,6 +10,7 @@ from game import Game
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
+games = dict()
 
 intents = discord.Intents.default()
 intents.members = True
@@ -40,8 +41,15 @@ async def on_member_join(member):
 async def on_message(message):
     if message.author == client.user:
         return
-    if game.active:
-        if message.content.startswith("hide"):
+
+    game = games.get(message.guild.id, default=None)
+    if game and game.active:
+        if message.author.id != game.name:
+            await message.channel.send(f"{message.author.name} do not \
+            'interupt another players game")
+            return
+
+        elif message.content.startswith("hide"):
             game.hide()
         elif message.content.startswith("run"):
             game.run()
@@ -50,9 +58,17 @@ async def on_message(message):
             game.gun()
         elif (message.content.startswith("feed")):
             game.feed()
+        elif message.content.startswith("!play"):
+            await message.channel.send("Game active on server. Can't play now")
+
         await message.delete()
+        return
+
     elif message.content.startswith("!play"):
-        game.start()
+        game = Game(
+            name=message.author.id, channel=message.channel.id)
+        games[message.guild.id] = game
+
         game_message = await message.channel.send(game.draw())
         while game.active:
             await asyncio.sleep(1)

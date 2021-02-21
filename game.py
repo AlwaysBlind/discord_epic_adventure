@@ -2,13 +2,17 @@ from enum import Enum
 import character
 
 
-class Game():
+class Game:
     active = False
     skull = "☠️"
     MAX_TURNS_HIDDEN = 3
     n = 16
     inputs = []
     MEAT_KEY = 'meat'
+
+    def __init__(self, name, channel):
+        self.name = name
+        self.channel = channel
 
     def start(self):
         self.characters = dict()
